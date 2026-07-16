@@ -1,6 +1,7 @@
 package com.felipe.orderservice.config;
 
 import com.felipe.orderservice.order.domain.Order;
+import com.felipe.orderservice.order.domain.OrderStatus;
 import com.felipe.orderservice.order.repository.OrderRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +30,14 @@ public class DataTestRunner {
                     "AirPods 2",
                     new BigDecimal("1000.00"),
                     2
+            );
+
+            UUID correlationId = UUID.randomUUID();
+
+            order.changeStatus(
+                    OrderStatus.AWAITING_STOCK,
+                    "REQUEST_STOCK_RESERVATION",
+                    correlationId
             );
 
             Order savedOrder = orderRepository.save(order);

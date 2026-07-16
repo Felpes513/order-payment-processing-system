@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,6 +41,9 @@ public class Order {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderStatusHistory> statusHistory = new ArrayList<>();
+
     /*
     mappedBy indica que o relacionamento é controlado pelo atributo "order" em OrderItem.
     cascade = ALL faz com que operações no Order também sejam aplicadas aos seus itens.
@@ -66,7 +70,7 @@ public class Order {
 
         Instant now = Instant.now();
 
-        return new Order(
+        Order order = new Order(
                 UUID.randomUUID(),
                 customerId,
                 OrderStatus.CREATED,
@@ -74,6 +78,18 @@ public class Order {
                 now,
                 now
         );
+
+        OrderStatusHistory history = OrderStatusHistory.create(
+                order,
+                null,
+                OrderStatus.CREATED,
+                "ORDER_CREATED",
+                null
+        );
+
+        order.statusHistory.add(history);
+
+        return order;
     }
 
     public void addItem(UUID productId, String productname, BigDecimal unitPrice, Integer quantity) {
@@ -89,14 +105,28 @@ public class Order {
         this.updatedAt = Instant.now();
     }
 
-    public void changeStatus(OrderStatus newStatus) {
+    public void changeStatus(OrderStatus newStatus, String reason, UUID correlationId) {
         if (newStatus == null) {
             throw new IllegalArgumentException("New status cannot be null");
         }
 
+        OrderStatus previousStatus = this.status;
+
         this.status = newStatus;
         this.updatedAt = Instant.now();
+
+        OrderStatusHistory history = OrderStatusHistory.create(
+                this,
+                previousStatus,
+                newStatus,
+                reason,
+                correlationId
+        );
+
+        this.statusHistory.add(history);
     }
+
+    public void changeStatus(OrderStatus newStatus){}
 
     public void updateTotal(BigDecimal totalAmount) {
         if (totalAmount == null) {
@@ -115,5 +145,9 @@ public class Order {
         this.totalAmount = this.items.stream()
                 .map(OrderItem::getSubtotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public List<OrderStatusHistory> getStatusHistory() {
+        return Collections.unmodifiableList(this.statusHistory);
     }
 }
