@@ -1,0 +1,42 @@
+package com.felipe.orderservice.config;
+
+import com.felipe.orderservice.order.domain.Order;
+import com.felipe.orderservice.order.repository.OrderRepository;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.math.BigDecimal;
+import java.util.UUID;
+
+//@Configuration
+public class DataTestRunner {
+
+    @Bean
+    CommandLineRunner testOrderPersistence(OrderRepository orderRepository) {
+        return args -> {
+            Order order = Order.create(UUID.randomUUID());
+
+            order.addItem(
+                    UUID.randomUUID(),
+                    "MacBook Air M2",
+                    new BigDecimal("10000.00"),
+                    1
+            );
+
+            order.addItem(
+                    UUID.randomUUID(),
+                    "AirPods 2",
+                    new BigDecimal("1000.00"),
+                    2
+            );
+
+            Order savedOrder = orderRepository.save(order);
+
+            System.out.println("Pedido salvo com sucesso!");
+            System.out.println("ID do pedido: " + savedOrder.getId());
+            System.out.println("Total: " + savedOrder.getTotalAmount());
+            System.out.println("Quantidade de itens: " + savedOrder.getItems().size());
+        };
+    }
+}

@@ -76,6 +76,19 @@ public class Order {
         );
     }
 
+    public void addItem(UUID productId, String productname, BigDecimal unitPrice, Integer quantity) {
+        OrderItem item = OrderItem.create(
+                this,
+                productId,
+                productname,
+                unitPrice,
+                quantity
+        );
+        this.items.add(item);
+        recalculateTotal();
+        this.updatedAt = Instant.now();
+    }
+
     public void changeStatus(OrderStatus newStatus) {
         if (newStatus == null) {
             throw new IllegalArgumentException("New status cannot be null");
@@ -96,5 +109,11 @@ public class Order {
 
         this.totalAmount = totalAmount;
         this.updatedAt = Instant.now();
+    }
+
+    public void recalculateTotal() {
+        this.totalAmount = this.items.stream()
+                .map(OrderItem::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
