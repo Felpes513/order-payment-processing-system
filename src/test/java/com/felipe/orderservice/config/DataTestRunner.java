@@ -2,7 +2,9 @@ package com.felipe.orderservice.config;
 
 import com.felipe.orderservice.order.domain.Order;
 import com.felipe.orderservice.order.domain.OrderStatus;
+import com.felipe.orderservice.order.domain.ProcessedEvent;
 import com.felipe.orderservice.order.repository.OrderRepository;
+import com.felipe.orderservice.order.repository.ProcessedEventRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +16,10 @@ import java.util.UUID;
 public class DataTestRunner {
 
     @Bean
-    CommandLineRunner testOrderPersistence(OrderRepository orderRepository) {
+    CommandLineRunner testOrderPersistence(
+            OrderRepository orderRepository,
+            ProcessedEventRepository processedEventRepository
+    ) {
         return args -> {
             Order order = Order.create(UUID.randomUUID());
 
@@ -42,10 +47,22 @@ public class DataTestRunner {
 
             Order savedOrder = orderRepository.save(order);
 
+            UUID eventId = UUID.randomUUID();
+
+            ProcessedEvent processedEvent = ProcessedEvent.create(
+                    eventId,
+                    "StockReserved",
+                    "stock-reserved-consumer"
+            );
+
+            processedEventRepository.save(processedEvent);
+
             System.out.println("Pedido salvo com sucesso!");
             System.out.println("ID do pedido: " + savedOrder.getId());
             System.out.println("Total: " + savedOrder.getTotalAmount());
             System.out.println("Quantidade de itens: " + savedOrder.getItems().size());
+            System.out.println("Históricos: " + savedOrder.getStatusHistory().size());
+            System.out.println("Evento processado salvo: " + eventId);
         };
     }
 }
