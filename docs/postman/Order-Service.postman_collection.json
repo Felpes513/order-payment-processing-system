@@ -1,0 +1,43 @@
+{
+  "info": {
+    "_postman_id": "c74e3fe4-4aff-4f34-9f20-7cb9c6287273",
+    "name": "Order-Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "47887092"
+  },
+  "item": [
+    {
+      "name": "Order",
+      "item": [
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"customerId\": \"3cf569bc-628e-423e-a72a-86f7939ac474\",\r\n  \"items\": [\r\n    {\r\n      \"productId\": \"57e23421-0df4-462d-826c-3b94cbd6323b\",\r\n      \"productName\": \"MacBook Air M2\",\r\n      \"unitPrice\": 10000.00,\r\n      \"quantity\": 1\r\n    },\r\n    {\r\n      \"productId\": \"d4a35006-5908-4cd1-a24a-2d44bcd1ff80\",\r\n      \"productName\": \"AirPods 2\",\r\n      \"unitPrice\": 1000.00,\r\n      \"quantity\": 2\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
