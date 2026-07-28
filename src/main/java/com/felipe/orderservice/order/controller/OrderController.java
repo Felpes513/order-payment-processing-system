@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController // Essa tag diz que esta classe receba requisições HTTP e devolve em JSON
 @RequestMapping("/orders")
 @RequiredArgsConstructor
@@ -19,5 +21,10 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED) // Essa tag faz com que sempre que der certo retorne um status code 201
     public OrderResponse createOrder(@Valid @RequestBody CreateOrderRequest request){
         return orderService.createOrder(request);
+    }
+
+    @GetMapping("/{id}")
+    public OrderResponse findById(@PathVariable UUID id){
+        return orderService.findById(id);
     }
 }

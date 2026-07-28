@@ -9,6 +9,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service //Essa anotação permite a injeção e gerenciamento em outras classes
 @RequiredArgsConstructor
 public class OrderService {
@@ -32,5 +34,13 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
 
         return OrderResponse.fromDomain(savedOrder);
+    }
+
+    @Transactional
+    public OrderResponse findById(UUID id){
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
+        return OrderResponse.fromDomain(order);
     }
 }
