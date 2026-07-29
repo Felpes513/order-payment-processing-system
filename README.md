@@ -117,6 +117,13 @@ Principais validações:
 
 Uma coleção pronta para importação no Postman está disponível em [`docs/postman/Order-Service.postman_collection.json`](docs/postman/Order-Service.postman_collection.json).
 
+## Contratos de código com JML
+
+As principais regras das entidades de domínio estão documentadas como
+pré-condições, pós-condições e invariantes JML. Consulte o
+[`docs/JML.md`](docs/JML.md) para aprender a ler os contratos e entender como
+validá-los com OpenJML.
+
 ### Health check
 
 ```text

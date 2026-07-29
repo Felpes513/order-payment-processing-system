@@ -36,8 +36,48 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Get",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/orders/c7cfa851-60ce-4a0e-8f97-0904b3531887",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "orders",
+                "c7cfa851-60ce-4a0e-8f97-0904b3531887"
+              ]
+            }
+          },
+          "response": []
         }
       ]
+    },
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/actuator/health",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "actuator",
+            "health"
+          ]
+        }
+      },
+      "response": []
     }
   ]
 }

@@ -19,18 +19,27 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProcessedEvent {
 
+    //@ spec_public
     @Id
     @Column(name = "event_id", nullable = false)
     private UUID eventId;
 
+    //@ spec_public
     @Column(name = "event_type", nullable = false)
     private String eventType;
 
+    //@ spec_public
     @Column(name = "consumer_name", nullable = false)
     private String consumerName;
 
     @Column(name = "processed_at", nullable = false)
     private Instant processedAt;
+
+    //@ public invariant eventId != null;
+    //@ public invariant eventType != null && !eventType.isBlank();
+    //@ public invariant eventType.length() <= 120;
+    //@ public invariant consumerName != null && !consumerName.isBlank();
+    //@ public invariant consumerName.length() <= 120;
 
     private ProcessedEvent(UUID eventId, String eventType, String consumerName, Instant processedAt) {
         this.eventId = eventId;
@@ -39,6 +48,18 @@ public class ProcessedEvent {
         this.processedAt = processedAt;
     }
 
+    /*@
+      @ public normal_behavior
+      @   requires eventId != null;
+      @   requires eventType != null && !eventType.isBlank();
+      @   requires eventType.length() <= 120;
+      @   requires consumerName != null && !consumerName.isBlank();
+      @   requires consumerName.length() <= 120;
+      @   ensures \result != null;
+      @   ensures \result.eventId == eventId;
+      @   ensures \result.eventType == eventType;
+      @   ensures \result.consumerName == consumerName;
+      @*/
     public static ProcessedEvent create(UUID eventId, String eventType, String consumerName) {
         validateEventId(eventId);
         validateEventType(eventType);
