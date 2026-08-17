@@ -43,7 +43,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8081/orders/c7cfa851-60ce-4a0e-8f97-0904b3531887",
+              "raw": "http://localhost:8081/orders/beb8724f-9e7a-45c1-98be-66e3d3c3af26",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -51,7 +51,37 @@
               "port": "8081",
               "path": [
                 "orders",
-                "c7cfa851-60ce-4a0e-8f97-0904b3531887"
+                "beb8724f-9e7a-45c1-98be-66e3d3c3af26"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Order",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Customer requested cancellation\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/orders/beb8724f-9e7a-45c1-98be-66e3d3c3af26/cancel",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "orders",
+                "beb8724f-9e7a-45c1-98be-66e3d3c3af26",
+                "cancel"
               ]
             }
           },

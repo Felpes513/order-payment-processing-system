@@ -1,5 +1,6 @@
 package com.felipe.orderservice.order.controller;
 
+import com.felipe.orderservice.order.dto.CancelOrderRequest;
 import com.felipe.orderservice.order.dto.CreateOrderRequest;
 import com.felipe.orderservice.order.dto.OrderResponse;
 import com.felipe.orderservice.order.service.OrderService;
@@ -26,5 +27,10 @@ public class OrderController {
     @GetMapping("/{id}")
     public OrderResponse findById(@PathVariable UUID id){
         return orderService.findById(id);
+    }
+
+    @PatchMapping("/{id}/cancel")
+    public OrderResponse cancelOrder(@PathVariable UUID id, @Valid @RequestBody CancelOrderRequest request) {
+        return orderService.cancelOrder(id, request);
     }
 }

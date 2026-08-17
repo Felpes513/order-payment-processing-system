@@ -1,5 +1,6 @@
 package com.felipe.orderservice.order.domain;
 
+import com.felipe.orderservice.shared.exception.BusinessException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -203,4 +204,18 @@ public class Order {
     public List<OrderStatusHistory> getStatusHistory() {
         return Collections.unmodifiableList(this.statusHistory);
     }
+
+    public void cancel(String reason, UUID correlationId) {
+        if (this.status == OrderStatus.CANCELLED) {
+            throw new BusinessException("Order is already cancelled");
+        }
+
+        if (this.status == OrderStatus.COMPLETED) {
+            throw new BusinessException("Completed order cannot be cancelled");
+        }
+
+        changeStatus(OrderStatus.CANCELLED, reason, correlationId);
+    }
+
+
 }
