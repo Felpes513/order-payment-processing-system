@@ -5,6 +5,7 @@ import com.felipe.orderservice.order.dto.CreateOrderItemRequest;
 import com.felipe.orderservice.order.dto.CreateOrderRequest;
 import com.felipe.orderservice.order.dto.OrderResponse;
 import com.felipe.orderservice.order.repository.OrderRepository;
+import com.felipe.orderservice.shared.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class OrderService {
     @Transactional
     public OrderResponse findById(UUID id){
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
 
         return OrderResponse.fromDomain(order);
     }

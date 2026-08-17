@@ -9,6 +9,8 @@ Este projeto usa JML nas entidades de domínio:
 - `Order`: invariantes do pedido e contratos para criação, inclusão de item,
   alteração de status e atualização do total;
 - `OrderItem`: invariantes e contrato de criação de um item válido;
+- `OrderStatusHistory`: invariantes e comportamentos normal e excepcional da
+  criação de uma transição de status;
 - `ProcessedEvent`: invariantes e contrato de criação de um evento processado.
 
 ## Como ler um contrato

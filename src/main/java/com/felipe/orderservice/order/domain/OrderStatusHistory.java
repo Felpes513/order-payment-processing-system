@@ -22,29 +22,42 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderStatusHistory {
 
+    //@ spec_public
     @Id
     private UUID id;
 
+    //@ spec_public
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
+    //@ spec_public
     @Enumerated(EnumType.STRING)
     @Column(name = "previous_status", length = 40)
     private OrderStatus previousStatus;
 
+    //@ spec_public
     @Enumerated(EnumType.STRING)
     @Column(name = "new_status", nullable = false, length = 40)
     private OrderStatus newStatus;
 
+    //@ spec_public
     @Column(length = 255)
     private String reason;
 
+    //@ spec_public
     @Column(name = "correlation_id")
     private UUID correlationId;
 
+    //@ spec_public
     @Column(name = "occurred_at", nullable = false)
     private Instant occurredAt;
+
+    //@ public invariant id != null;
+    //@ public invariant order != null;
+    //@ public invariant newStatus != null;
+    //@ public invariant reason == null || reason.length() <= 255;
+    //@ public invariant occurredAt != null;
 
     private OrderStatusHistory(
             UUID id,
@@ -64,6 +77,25 @@ public class OrderStatusHistory {
         this.occurredAt = occurredAt;
     }
 
+    /*@
+      @ public normal_behavior
+      @   requires order != null;
+      @   requires newStatus != null;
+      @   requires reason == null || reason.length() <= 255;
+      @   ensures \result != null;
+      @   ensures \result.order == order;
+      @   ensures \result.previousStatus == previousStatus;
+      @   ensures \result.newStatus == newStatus;
+      @   ensures \result.reason == reason;
+      @   ensures \result.correlationId == correlationId;
+      @   ensures \result.occurredAt != null;
+      @ also
+      @ public exceptional_behavior
+      @   requires order == null
+      @         || newStatus == null
+      @         || (reason != null && reason.length() > 255);
+      @   signals_only IllegalArgumentException;
+      @*/
     public static OrderStatusHistory create(
             Order order,
             OrderStatus previousStatus,
