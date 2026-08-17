@@ -1,6 +1,7 @@
 package com.felipe.orderservice.order.service;
 
 import com.felipe.orderservice.order.domain.Order;
+import com.felipe.orderservice.order.dto.CancelOrderRequest;
 import com.felipe.orderservice.order.dto.CreateOrderItemRequest;
 import com.felipe.orderservice.order.dto.CreateOrderRequest;
 import com.felipe.orderservice.order.dto.OrderResponse;
@@ -42,5 +43,17 @@ public class OrderService {
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
 
         return OrderResponse.fromDomain(order);
+    }
+
+    @Transactional
+    public OrderResponse cancelOrder(UUID id, CancelOrderRequest request){
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
+        UUID correlationId = UUID.randomUUID();
+        order.cancel(request.reason(),  correlationId);
+        Order savedOrder = orderRepository.save(order);
+
+        return OrderResponse.fromDomain(savedOrder);
     }
 }
