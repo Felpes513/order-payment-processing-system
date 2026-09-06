@@ -6,6 +6,7 @@ import com.felipe.orderservice.order.dto.CancelOrderRequest;
 import com.felipe.orderservice.order.dto.CreateOrderItemRequest;
 import com.felipe.orderservice.order.dto.CreateOrderRequest;
 import com.felipe.orderservice.order.dto.OrderResponse;
+import com.felipe.orderservice.order.event.OrderEventPublisher;
 import com.felipe.orderservice.order.repository.OrderRepository;
 import com.felipe.orderservice.shared.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,11 +32,14 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
 
+    @Mock
+    private OrderEventPublisher orderEventPublisher;
+
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository);
+        orderService = new OrderService(orderRepository, orderEventPublisher);
     }
 
     @Test
@@ -56,6 +60,7 @@ class OrderServiceTest {
         assertThat(response.totalAmount()).isEqualByComparingTo("240.00");
         assertThat(response.items()).hasSize(1);
         verify(orderRepository).save(any(Order.class));
+        verify(orderEventPublisher).publishOrderCreated(any(Order.class));
     }
 
     @Test

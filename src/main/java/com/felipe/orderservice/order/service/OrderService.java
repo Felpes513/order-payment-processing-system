@@ -5,6 +5,7 @@ import com.felipe.orderservice.order.dto.CancelOrderRequest;
 import com.felipe.orderservice.order.dto.CreateOrderItemRequest;
 import com.felipe.orderservice.order.dto.CreateOrderRequest;
 import com.felipe.orderservice.order.dto.OrderResponse;
+import com.felipe.orderservice.order.event.OrderEventPublisher;
 import com.felipe.orderservice.order.repository.OrderRepository;
 import com.felipe.orderservice.shared.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final OrderEventPublisher orderEventPublisher;
 
     @Transactional //Essa tag trata cada chamada como uma transação unica
                   // Tudo que acontecer dentro desse método deve ser tratado como uma única operação no banco.
@@ -43,6 +45,8 @@ public class OrderService {
         }
 
         Order savedOrder = orderRepository.save(order);
+
+        orderEventPublisher.publishOrderCreated(savedOrder);
 
         return OrderResponse.fromDomain(savedOrder);
     }
