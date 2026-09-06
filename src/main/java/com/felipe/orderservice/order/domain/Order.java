@@ -40,12 +40,15 @@ public class Order {
     @Column(nullable = false)
     private Long version;
 
+    //@ spec_public
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
+    //@ spec_public
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    //@ spec_public
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderStatusHistory> statusHistory = new ArrayList<>();
 
@@ -56,13 +59,18 @@ public class Order {
     Relacionamento controlado por OrderItem.order.
     Ao salvar ou remover Order, seus itens acompanham a operação.
     */
+    //@ spec_public
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
 
     //@ public invariant id != null;
     //@ public invariant customerId != null;
     //@ public invariant status != null;
-    //@ public invariant totalAmount != null;
+    //@ public invariant totalAmount != null && totalAmount.compareTo(BigDecimal.ZERO) >= 0;
+    //@ public invariant createdAt != null;
+    //@ public invariant updatedAt != null;
+    //@ public invariant statusHistory != null;
+    //@ public invariant items != null;
 
     private Order(UUID id, UUID customerId, OrderStatus status, BigDecimal totalAmount, Instant createdAt, Instant updatedAt) {
         this.id = id;
@@ -80,6 +88,10 @@ public class Order {
       @   ensures \result.customerId == customerId;
       @   ensures \result.status == OrderStatus.CREATED;
       @   ensures \result.totalAmount.compareTo(BigDecimal.ZERO) == 0;
+      @   ensures \result.statusHistory.size() == 1;
+      @   ensures \result.items.isEmpty();
+      @   ensures \result.createdAt != null;
+      @   ensures \result.updatedAt != null;
       @ also
       @ public exceptional_behavior
       @   requires customerId == null;
@@ -169,6 +181,12 @@ public class Order {
         this.statusHistory.add(history);
     }
 
+    /*@
+      @ public normal_behavior
+      @   requires newStatus != null;
+      @   ensures status == \old(status);
+      @   ensures statusHistory.size() == \old(statusHistory.size());
+      @*/
     public void changeStatus(OrderStatus newStatus){}
 
     /*@
@@ -195,16 +213,38 @@ public class Order {
         this.updatedAt = Instant.now();
     }
 
+    /*@
+      @ public normal_behavior
+      @   ensures totalAmount != null;
+      @   ensures totalAmount.compareTo(BigDecimal.ZERO) >= 0;
+      @*/
     public void recalculateTotal() {
         this.totalAmount = this.items.stream()
                 .map(OrderItem::getSubtotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    /*@
+      @ public normal_behavior
+      @   ensures \result != null;
+      @   ensures \result.size() == statusHistory.size();
+      @*/
     public List<OrderStatusHistory> getStatusHistory() {
         return Collections.unmodifiableList(this.statusHistory);
     }
 
+    /*@
+      @ public normal_behavior
+      @   requires status != OrderStatus.CANCELLED;
+      @   requires status != OrderStatus.COMPLETED;
+      @   requires reason == null || reason.length() <= 255;
+      @   ensures status == OrderStatus.CANCELLED;
+      @   ensures statusHistory.size() == \old(statusHistory.size()) + 1;
+      @ also
+      @ public exceptional_behavior
+      @   requires status == OrderStatus.CANCELLED || status == OrderStatus.COMPLETED;
+      @   signals_only BusinessException;
+      @*/
     public void cancel(String reason, UUID correlationId) {
         if (this.status == OrderStatus.CANCELLED) {
             throw new BusinessException("Order is already cancelled");

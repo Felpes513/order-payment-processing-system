@@ -11,16 +11,21 @@ import java.util.UUID;
 public record CreateOrderItemRequest(
 
         @NotNull(message = "Product id is required")
-        UUID productId,
+        /*@ spec_public @*/ UUID productId,
 
         @NotBlank(message = "Product name is required")
-        String productName,
+        /*@ spec_public @*/ String productName,
 
         @NotNull(message = "Unit price is required")
         @DecimalMin(value = "0.00", inclusive = true, message = "Unit price cannot be negative")
-        BigDecimal unitPrice,
+        /*@ spec_public @*/ BigDecimal unitPrice,
 
         @NotNull(message = "Quantity is required")
         @Min(value = 1, message = "Quantity must be greater than zero")
-        Integer quantity
-){}
+        /*@ spec_public @*/ Integer quantity
+){
+    //@ public invariant productId != null;
+    //@ public invariant productName != null && !productName.isBlank();
+    //@ public invariant unitPrice != null && unitPrice.compareTo(BigDecimal.ZERO) >= 0;
+    //@ public invariant quantity != null && quantity > 0;
+}

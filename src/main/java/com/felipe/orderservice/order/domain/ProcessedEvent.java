@@ -32,6 +32,7 @@ public class ProcessedEvent {
     @Column(name = "consumer_name", nullable = false)
     private String consumerName;
 
+    //@ spec_public
     @Column(name = "processed_at", nullable = false)
     private Instant processedAt;
 
@@ -40,6 +41,7 @@ public class ProcessedEvent {
     //@ public invariant eventType.length() <= 120;
     //@ public invariant consumerName != null && !consumerName.isBlank();
     //@ public invariant consumerName.length() <= 120;
+    //@ public invariant processedAt != null;
 
     private ProcessedEvent(UUID eventId, String eventType, String consumerName, Instant processedAt) {
         this.eventId = eventId;
@@ -59,6 +61,13 @@ public class ProcessedEvent {
       @   ensures \result.eventId == eventId;
       @   ensures \result.eventType == eventType;
       @   ensures \result.consumerName == consumerName;
+      @   ensures \result.processedAt != null;
+      @ also
+      @ public exceptional_behavior
+      @   requires eventId == null
+      @         || eventType == null || eventType.isBlank() || eventType.length() > 120
+      @         || consumerName == null || consumerName.isBlank() || consumerName.length() > 120;
+      @   signals_only IllegalArgumentException;
       @*/
     public static ProcessedEvent create(UUID eventId, String eventType, String consumerName) {
         validateEventId(eventId);

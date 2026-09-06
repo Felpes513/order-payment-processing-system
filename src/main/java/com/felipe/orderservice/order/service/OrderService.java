@@ -21,6 +21,15 @@ public class OrderService {
 
     @Transactional //Essa tag trata cada chamada como uma transação unica
                   // Tudo que acontecer dentro desse método deve ser tratado como uma única operação no banco.
+    /*@
+      @ public normal_behavior
+      @   requires request != null;
+      @   requires request.customerId() != null;
+      @   requires request.items() != null && !request.items().isEmpty();
+      @   ensures \result != null;
+      @   ensures \result.customerId() == request.customerId();
+      @   ensures \result.items().size() == request.items().size();
+      @*/
     public OrderResponse  createOrder(CreateOrderRequest request){
         Order order = Order.create(request.customerId());
 
@@ -39,6 +48,16 @@ public class OrderService {
     }
 
     @Transactional
+    /*@
+      @ public normal_behavior
+      @   requires id != null;
+      @   ensures \result != null;
+      @   ensures \result.id() == id;
+      @ also
+      @ public exceptional_behavior
+      @   requires id != null;
+      @   signals_only ResourceNotFoundException;
+      @*/
     public OrderResponse findById(UUID id){
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
@@ -47,6 +66,15 @@ public class OrderService {
     }
 
     @Transactional
+    /*@
+      @ public normal_behavior
+      @   requires id != null;
+      @   requires request != null;
+      @   requires request.reason() != null && !request.reason().isBlank();
+      @   ensures \result != null;
+      @   ensures \result.id() == id;
+      @   ensures \result.status() == com.felipe.orderservice.order.domain.OrderStatus.CANCELLED;
+      @*/
     public OrderResponse cancelOrder(UUID id, CancelOrderRequest request){
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));

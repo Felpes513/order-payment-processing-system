@@ -14,6 +14,13 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
+    /*@
+      @ public normal_behavior
+      @   requires exception != null && request != null;
+      @   ensures \result != null;
+      @   ensures \result.status() == HttpStatus.NOT_FOUND.value();
+      @   ensures \result.message() == exception.getMessage();
+      @*/
     public ErrorResponse handleResourceNotFound(
             ResourceNotFoundException exception,
             HttpServletRequest request
@@ -28,6 +35,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    /*@
+      @ public normal_behavior
+      @   requires exception != null && request != null;
+      @   ensures \result != null;
+      @   ensures \result.getStatusCode().value() == HttpStatus.BAD_REQUEST.value();
+      @   ensures \result.getBody() != null;
+      @*/
     public ResponseEntity<ValidationErrorResponse> handleValidationErrors(
             MethodArgumentNotValidException exception,
             HttpServletRequest request
@@ -56,6 +70,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BusinessException.class)
+    /*@
+      @ public normal_behavior
+      @   requires exception != null && request != null;
+      @   ensures \result != null;
+      @   ensures \result.getStatusCode().value() == HttpStatus.CONFLICT.value();
+      @   ensures \result.getBody() != null;
+      @*/
     public ResponseEntity<ErrorResponse> handleBusinessException(
             BusinessException exception,
             HttpServletRequest request

@@ -10,9 +10,11 @@ import java.util.UUID;
 public record CreateOrderRequest(
 
         @NotNull(message = "Customer id is required")
-        UUID customerId,
+        /*@ spec_public @*/ UUID customerId,
 
-        @Valid
         @NotEmpty(message = "Order must have at least one item")
-        List<CreateOrderItemRequest> items
-){}
+        /*@ spec_public @*/ List<@Valid CreateOrderItemRequest> items
+){
+    //@ public invariant customerId != null;
+    //@ public invariant items != null && !items.isEmpty();
+}

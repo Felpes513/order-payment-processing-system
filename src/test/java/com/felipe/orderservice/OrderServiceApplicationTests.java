@@ -1,13 +1,16 @@
 package com.felipe.orderservice;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootTest
+import static org.assertj.core.api.Assertions.assertThat;
+
 class OrderServiceApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void applicationClassHasSpringBootConfiguration() {
+		assertThat(OrderServiceApplication.class)
+				.hasAnnotation(SpringBootApplication.class);
 	}
 
 }

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 public record CancelOrderRequest(
 
         @NotBlank(message = "Reason is required")
-        String reason
+        /*@ spec_public @*/ String reason
 ) {
+    //@ public invariant reason != null && !reason.isBlank();
 }

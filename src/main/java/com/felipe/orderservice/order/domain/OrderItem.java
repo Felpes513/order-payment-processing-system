@@ -50,6 +50,7 @@ public class OrderItem {
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal subtotal;
 
+    //@ spec_public
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
@@ -61,6 +62,7 @@ public class OrderItem {
     //@ public invariant unitPrice != null && unitPrice.compareTo(BigDecimal.ZERO) >= 0;
     //@ public invariant quantity != null && quantity > 0;
     //@ public invariant subtotal != null && subtotal.compareTo(BigDecimal.ZERO) >= 0;
+    //@ public invariant createdAt != null;
 
     private OrderItem(UUID id, Order order, UUID productId, String productName, BigDecimal unitPrice, Integer quantity, BigDecimal subtotal, Instant createdAt) {
         this.id = id;
@@ -87,6 +89,15 @@ public class OrderItem {
       @   ensures \result.productName == productName;
       @   ensures \result.unitPrice == unitPrice;
       @   ensures \result.quantity == quantity;
+      @   ensures \result.subtotal.compareTo(unitPrice.multiply(BigDecimal.valueOf(quantity))) == 0;
+      @   ensures \result.createdAt != null;
+      @ also
+      @ public exceptional_behavior
+      @   requires order == null || productId == null
+      @         || productName == null || productName.isBlank() || productName.length() > 150
+      @         || unitPrice == null || unitPrice.compareTo(BigDecimal.ZERO) < 0
+      @         || quantity == null || quantity <= 0;
+      @   signals_only IllegalArgumentException;
       @*/
     public static OrderItem create(Order order, UUID productId, String productName, BigDecimal unitPrice, Integer quantity) {
         validateOrder(order);
