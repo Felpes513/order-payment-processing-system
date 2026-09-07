@@ -41,7 +41,9 @@ Não é necessário instalar o Maven: o projeto inclui o Maven Wrapper.
 
 ## Como executar
 
-### 1. Inicie o PostgreSQL
+### 1. Configure as credenciais e inicie a infraestrutura
+
+Edite o `.env` na raiz do projeto. Em um clone novo, copie `.env.example` para `.env` e preencha as três senhas antes de iniciar.
 
 ```bash
 docker compose up -d
@@ -54,12 +56,14 @@ O banco ficará disponível em `localhost:5433`. O volume `order_postgres_data` 
 Linux/macOS:
 
 ```bash
+cd order-service
 ./mvnw spring-boot:run
 ```
 
 Windows:
 
 ```powershell
+cd order-service
 .\mvnw.cmd spring-boot:run
 ```
 
@@ -67,7 +71,7 @@ A API será iniciada em `http://localhost:8081`. Na inicialização, o Flyway cr
 
 ### Executar os testes
 
-Com o PostgreSQL disponível:
+Na pasta `order-service`:
 
 ```bash
 ./mvnw test
@@ -132,29 +136,36 @@ GET http://localhost:8081/actuator/health
 
 ## Configuração
 
-As configurações padrão ficam em `src/main/resources/application.properties` e podem ser sobrescritas pelas seguintes variáveis de ambiente:
+As credenciais ficam no `.env` da raiz, ignorado pelo Git. O `.env.example` é o modelo versionável, sem senhas. O arquivo local inicial mantém os valores de desenvolvimento anteriores; substitua-os pelos seus valores.
 
-| Variável | Valor padrão |
+| Variável de senha | Utilização |
 |---|---|
-| `ORDER_DATABASE_URL` | `jdbc:postgresql://localhost:5433/order_db` |
-| `ORDER_DATABASE_USERNAME` | `order_user` |
-| `ORDER_DATABASE_PASSWORD` | `order_password` |
+| `ORDER_DATABASE_PASSWORD` | PostgreSQL de pedidos |
+| `INVENTORY_DATABASE_PASSWORD` | PostgreSQL de estoque |
+| `RABBITMQ_PASSWORD` | RabbitMQ dos dois serviços e painel de gerenciamento |
+
+O arquivo também contém usuários, URLs dos bancos e host/porta do RabbitMQ. Os bancos do Compose mantêm os nomes `order_db` e `inventory_db` e as portas locais 5433 e 5434.
+
+O Docker Compose lê o `.env` automaticamente. Os dois serviços importam o arquivo como properties ao executar pela raiz do projeto ou pela pasta do serviço, inclusive pela IDE: configure o diretório de trabalho para uma dessas pastas. Variáveis de ambiente podem sobrescrever os valores. Para iniciar o estoque, execute `./mvnw spring-boot:run` na pasta `inventory-service`.
+
+Use `CHAVE=valor`, sem aspas, espaços, `$`, `#` ou barras invertidas, para manter a compatibilidade dos leitores do arquivo; prefira senhas longas alfanuméricas. Não use `source .env`, pois o arquivo é carregado diretamente pelas aplicações.
+
+**Volumes existentes:** alterar o `.env` não muda as credenciais já gravadas no PostgreSQL ou RabbitMQ. Nesses casos, altere também a senha no serviço correspondente antes de reiniciar as aplicações. Não apague os volumes para trocar senhas se precisar preservar os dados.
 
 ## Executar com Docker
 
 Primeiro, construa a imagem:
 
 ```bash
-docker build -t order-service .
+docker build -t order-service ./order-service
 ```
 
 Com o PostgreSQL do `compose.yaml` em execução, inicie a aplicação apontando para o host:
 
 ```bash
-docker run --rm -p 8081:8081 \
+docker run --rm -p 8081:8081 --env-file .env \
   -e ORDER_DATABASE_URL=jdbc:postgresql://host.docker.internal:5433/order_db \
-  -e ORDER_DATABASE_USERNAME=order_user \
-  -e ORDER_DATABASE_PASSWORD=order_password \
+  -e RABBITMQ_HOST=host.docker.internal \
   order-service
 ```
 

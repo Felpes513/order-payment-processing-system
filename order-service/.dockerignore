@@ -9,3 +9,6 @@ target
 Dockerfile
 compose.yaml
 README.md
+
+.env
+.env.*
