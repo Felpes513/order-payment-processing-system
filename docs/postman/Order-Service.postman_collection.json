@@ -10,13 +10,13 @@
       "name": "Order",
       "item": [
         {
-          "name": "Create",
+          "name": "Create Order",
           "request": {
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"customerId\": \"3cf569bc-628e-423e-a72a-86f7939ac474\",\r\n  \"items\": [\r\n    {\r\n      \"productId\": \"57e23421-0df4-462d-826c-3b94cbd6323b\",\r\n      \"productName\": \"MacBook Air M2\",\r\n      \"unitPrice\": 10000.00,\r\n      \"quantity\": 1\r\n    },\r\n    {\r\n      \"productId\": \"d4a35006-5908-4cd1-a24a-2d44bcd1ff80\",\r\n      \"productName\": \"AirPods 2\",\r\n      \"unitPrice\": 1000.00,\r\n      \"quantity\": 2\r\n    }\r\n  ]\r\n}",
+              "raw": "{\r\n    \"customerId\": \"3cf569bc-628e-423e-a72a-86f7939ac474\",\r\n    \"items\": [\r\n        {\r\n            \"productId\": \"57e23421-0df4-462d-826c-3b94cbd6323b\",\r\n            \"productName\": \"MacBook Air M2\",\r\n            \"unitPrice\": 10000.00,\r\n            \"quantity\": 1\r\n        },\r\n        {\r\n            \"productId\": \"d4a35006-5908-4cd1-a24a-2d44bcd1ff80\",\r\n            \"productName\": \"AirPods 2\",\r\n            \"unitPrice\": 1000.00,\r\n            \"quantity\": 2\r\n        }\r\n    ]\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -38,12 +38,12 @@
           "response": []
         },
         {
-          "name": "Get",
+          "name": "Get Order",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8081/orders/beb8724f-9e7a-45c1-98be-66e3d3c3af26",
+              "raw": "http://localhost:8081/orders/aff0fabf-34e0-4ae4-98bb-4d790e089dfe",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -51,7 +51,7 @@
               "port": "8081",
               "path": [
                 "orders",
-                "beb8724f-9e7a-45c1-98be-66e3d3c3af26"
+                "aff0fabf-34e0-4ae4-98bb-4d790e089dfe"
               ]
             }
           },
@@ -72,7 +72,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8081/orders/beb8724f-9e7a-45c1-98be-66e3d3c3af26/cancel",
+              "raw": "http://localhost:8081/orders/aff0fabf-34e0-4ae4-98bb-4d790e089dfe/cancel",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -80,8 +80,46 @@
               "port": "8081",
               "path": [
                 "orders",
-                "beb8724f-9e7a-45c1-98be-66e3d3c3af26",
+                "aff0fabf-34e0-4ae4-98bb-4d790e089dfe",
                 "cancel"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Inventory",
+      "item": [
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"MacBook Air M2\",\n  \"availableQuantity\": 10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8082/products",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8082",
+              "path": [
+                "products"
               ]
             }
           },
