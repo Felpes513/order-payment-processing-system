@@ -1,0 +1,54 @@
+package com.felipe.orderservice.order.controller;
+
+import com.felipe.orderservice.order.dto.CancelOrderRequest;
+import com.felipe.orderservice.order.dto.CreateOrderRequest;
+import com.felipe.orderservice.order.dto.OrderResponse;
+import com.felipe.orderservice.order.service.OrderService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+@RestController // Essa tag diz que esta classe receba requisições HTTP e devolve em JSON
+@RequestMapping("/orders")
+@RequiredArgsConstructor
+public class OrderController {
+
+    private final OrderService orderService;
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED) // Essa tag faz com que sempre que der certo retorne um status code 201
+    /*@
+      @ public normal_behavior
+      @   requires request != null;
+      @   ensures \result != null;
+      @*/
+    public OrderResponse createOrder(@Valid @RequestBody CreateOrderRequest request){
+        return orderService.createOrder(request);
+    }
+
+    @GetMapping("/{id}")
+    /*@
+      @ public normal_behavior
+      @   requires id != null;
+      @   ensures \result != null;
+      @   ensures \result.id() == id;
+      @*/
+    public OrderResponse findById(@PathVariable UUID id){
+        return orderService.findById(id);
+    }
+
+    @PatchMapping("/{id}/cancel")
+    /*@
+      @ public normal_behavior
+      @   requires id != null;
+      @   requires request != null;
+      @   ensures \result != null;
+      @   ensures \result.id() == id;
+      @*/
+    public OrderResponse cancelOrder(@PathVariable UUID id, @Valid @RequestBody CancelOrderRequest request) {
+        return orderService.cancelOrder(id, request);
+    }
+}
