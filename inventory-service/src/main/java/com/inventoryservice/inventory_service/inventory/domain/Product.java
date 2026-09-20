@@ -1,5 +1,6 @@
 package com.inventoryservice.inventory_service.inventory.domain;
 
+import com.inventoryservice.inventory_service.shared.exception.BusinessException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -71,7 +72,7 @@ public class Product {
         validateReservationQuantity(quantity);
 
         if (this.availableQuantity < quantity) {
-            throw new IllegalStateException("Insufficient stock available");
+            throw new BusinessException("Insufficient stock available");
         }
 
         this.availableQuantity -= quantity;

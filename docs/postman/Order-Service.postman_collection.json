@@ -104,7 +104,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"MacBook Air M2\",\n  \"availableQuantity\": 10\n}",
+              "raw": "{\n  \"name\": \"\",\n  \"availableQuantity\": -1\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -124,6 +124,56 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Get Product",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8082/products/2a567d35-7c9c-44f6-b1a7-51b5fb4194ae",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8082",
+              "path": [
+                "products",
+                "2a567d35-7c9c-44f6-b1a7-51b5fb4194ae"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reserve Product",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8082/products/2a567d35-7c9c-44f6-b1a7-51b5fb4194ae/reserve",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8082",
+              "path": [
+                "products",
+                "2a567d35-7c9c-44f6-b1a7-51b5fb4194ae",
+                "reserve"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -133,12 +183,12 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8081/actuator/health",
+          "raw": "http://localhost:8082/actuator/health",
           "protocol": "http",
           "host": [
             "localhost"
           ],
-          "port": "8081",
+          "port": "8082",
           "path": [
             "actuator",
             "health"
