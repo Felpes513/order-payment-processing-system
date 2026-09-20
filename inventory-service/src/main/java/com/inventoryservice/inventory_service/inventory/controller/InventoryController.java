@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import java.util.UUID;
+import com.inventoryservice.inventory_service.inventory.dto.ProductResponse;
 
 @RestController
 @RequestMapping("/products")
@@ -19,5 +21,10 @@ public class InventoryController {
     @ResponseStatus(HttpStatus.CREATED)
     public ProductResponse createProduct(@Valid @RequestBody CreateProductRequest request) {
         return inventoryService.createProduct(request);
+    }
+
+    @GetMapping("/{id}")
+    public ProductResponse findById(@PathVariable UUID id) {
+        return inventoryService.findById(id);
     }
 }
